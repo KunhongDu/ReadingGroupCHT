@@ -1,0 +1,177 @@
+%!TEX program = lualatex
+\documentclass[11pt]{article}
+
+% ---------- Font setup ----------
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\setmainfont{Libertinus Sans}[Scale=1.1]
+\setmathfont{Libertinus Math}[Scale=1.1]
+
+% ---------- Page layout ----------
+\usepackage[a4paper,margin=1in]{geometry}
+
+% ---------- Line spacing ----------
+\usepackage{setspace}
+\setstretch{0.96}
+\usepackage[colorlinks=true, urlcolor=blue]{hyperref}
+
+% ---------- Packages ----------
+\usepackage{tikz-cd}
+
+% ---------- Custom commands ----------
+\newcommand{\Lan}{\operatorname{Lan}}
+\newcommand{\Ran}{\operatorname{Ran}}
+\newcommand{\Ho}{\operatorname{Ho}}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\Top}{\mathbf{Top}}
+\newcommand{\ChAb}{\mathbf{Ch}_\bullet(\mathbf{Ab})}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calD}{\mathcal{D}}
+
+% ---------- Title ----------
+\title{
+    Reading Group on Categorical Homotopy Theory
+    \bigbreak
+    \large Introduction and outline for the first 4 meetings
+}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{To invert weak equivalences}
+In the category $\Top$ of topological spaces,
+homotopy equivalence is a good equivalence relation,
+so we can define the homotopy category $\Ho\Top$,
+whose objects are all the topological spaces
+but morphisms are equivalence classes of continuous maps up to homotopy equivalence.
+Sometimes working in $\Ho\Top$ is easy since every homotopy equivalence becomes an isomorphism. 
+
+There are also other interesting notions of ``weak equivalences'' that are not actually equivalences.
+Again, in the category $\Top$ of topological spaces, we say a map $f : X \to Y$ is a
+\href{https://ncatlab.org/nlab/show/weak+homotopy+equivalence}{weak homotopy equivalence} if
+$$\pi_n(f) : \pi_n(X) \to \pi_n(Y)$$
+is an isomorphism for $n\ge 1$ and a bijection when $n = 0$.
+Clearly homotopy equivalence is a weak equivalence, and we have the classical Whitehead's theorem
+(which is not provable in HoTT!) saying that,
+every weak homotopy equivalence between CW-complexes is a homotopy equivalence.
+However, weak homotopy equivalences are generally not invertible
+(see \href{https://ncatlab.org/nlab/show/pseudocircle}{here} for a counterexample).
+
+Another important example comes from the category of
+\href{https://ncatlab.org/nlab/show/chain+complex}{chain complexes}.
+\href{https://ncatlab.org/nlab/show/quasi-isomorphism}{Quasi-isomor-phisms},
+as the name might indicate, are also generally not invertible.
+
+What we can do is formally add an invertible arrow to theses weak equivalences.
+We consider the following construction of $\Ho\Top_{whe}$.
+The objects are all the topological spaces.
+The morphisms bewtween $X$ and $Y$ are the equivalence classes of zig-zags
+$$X \leftarrow Z_1 \rightarrow \cdots \leftarrow Z_{n} \to Y,$$
+suject to
+\begin{enumerate}
+    \item all the arrows backwards are weak homotopy equivalences.
+    \item identity arrows can be removed and then composed.
+\end{enumerate}
+
+Then a weak homotopy equivalence $X \stackrel{w}{\to} Y$ has an inverse given by
+$$X \stackrel{w}{\leftarrow} X \stackrel{\id}{\to} Y.$$
+
+However, this construction may not give a locally small category.
+That is, given a category $\mathcal C$ and a class of morphisms $W$ we want to want to invert,
+the resulting $\Ho_W \mathcal C(X,Y)$ may be a proper class
+(or in type theory, this means the type would lie in the next universe level).
+
+This is one of the reasons why we need
+\href{https://ncatlab.org/nlab/show/model+category}{model category}.
+With auxiliary data of fibrations and cofibrations,
+we can ensure the homotopy category we obtain is indeed locally small.
+
+Given two categories $\calC$ and $\calD$ and a functor $F : \calC \to \calD$,
+we may want to extend $F$ to $\Ho\cal C \to \Ho\cal D$.
+That is, we want $\tilde F$ such that the following diagram commutes
+\[\begin{tikzcd}
+\calC \arrow[r,"F"] \arrow[d,"\gamma"'] & \calD \arrow[d,"\gamma"] \\
+\Ho \calC \arrow[r,"\tilde{F}"'] & \Ho \calD
+\end{tikzcd}\]
+
+This is easy if $F$ preserves weak equivalences.
+But unfortunately, this is most of the time not the case.
+For example, the following two diagrams are (component-wise) homotopy equivalent
+
+\[
+\begin{tikzcd}
+    D ^ 1 \arrow[d] & S ^ 0 \arrow[l] \arrow[r] \arrow[d] & D ^1 \arrow[d] \\
+    * & S ^ 0 \arrow[l] \arrow[r] & *
+\end{tikzcd}
+\]
+But the colimit (a functor $\Top^{\bullet \leftarrow \bullet \rightarrow} \to \Top$) of the first row
+is $S^1$, while the colimit of the second row is $*$. 
+
+So we have to compromise by considering a weaker notion of extension,
+i.e., Kan extension of the functor $F$ along $\gamma: \calC \to \Ho\calC$.
+This gives us the so-called derived functors.
+In particular, homotopy co/limits are then the derived functors of (strict) co/limits.
+
+\section{``Weak equivalences are all that matter''}
+Traditionally, all the constructions mentioned above take place in model categories.
+But a generalization is possible: we can introduce a framework
+for constructing derived functors between categories equipped with a reasonable notion of
+weak equivalence. As Riehl said in the preface:
+
+\begin{quote}
+``The weak equivalences are all that matter in abstract homotopy theory, showing
+that particular notions of cofibrations/fibrations and cofibrant/fibrant objects are irrelevant
+to the construction of derived functors.''
+\end{quote}
+
+This generalization allows us to produce derived functors where
+appropriate model structures for the diagrams do not necessarily exist.
+
+Also, this philosophy could be inspiring for type theorists.
+In type theories, we rarely have a nice model structure,
+but we always have a nice notion of equivalence.
+So we would at least hope studying this book can help me understand
+homotopy co/limits in type theories like HoTT,
+or compare homotopy co/limits and strict co/limits in 2LTT.
+In 2.2, the book introduces this notion:
+a left deformation on $\calC$ is an endofunctor $Q$
+with a weak equivalence $Q \Rightarrow 1$.
+Doesn't it resemble modality?
+We hope they can be somehow connected.
+
+\section{An outline for the first 4 weeks}
+
+We hope to cover most of the first 3 chapters in the first 4 weeks.
+
+\subsection{Week 1: Kan extensions}
+\begin{quote}
+``All concepts are Kan extensions.''
+\end{quote}
+
+Yeah, we will introduce Kan extensions, the last part in Riehl's introductory book on category theory:
+\begin{enumerate}
+    \item the defintion
+    \item a computation in nice settings
+    \item nice Kan extensions that we only care
+    \item why ``all concepts are Kan extensions.''
+    \item time permitted, we might say a little bit about its application in simplicial sets.
+\end{enumerate}
+
+\subsection{Week 2: Homtopical category}
+
+The defintion of homotopical category. If people are interested, we may focus on the examples.
+
+\subsection{Week 3: Derived functors}
+
+Similarly, we should focus on examples. It may be nice to introduce a little homological algebras.
+
+\subsection{Week 4: Enriched category}
+
+The idea of enrichement is actually quite accessible.
+Again, I think we should focus on examples.
+
+
+\end{document}
