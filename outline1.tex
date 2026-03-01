@@ -77,7 +77,7 @@ suject to
 \end{enumerate}
 
 Then a weak homotopy equivalence $X \stackrel{w}{\to} Y$ has an inverse given by
-$$X \stackrel{w}{\leftarrow} X \stackrel{\id}{\to} Y.$$
+$$Y \stackrel{w}{\leftarrow} X \stackrel{\id}{\to} X.$$
 
 However, this construction may not give a locally small category.
 That is, given a category $\mathcal C$ and a class of morphisms $W$ we want to want to invert,
@@ -89,6 +89,11 @@ This is one of the reasons why we need
 With auxiliary data of fibrations and cofibrations,
 we can ensure the homotopy category we obtain is indeed locally small.
 
+This process is also called \href{https://ncatlab.org/nlab/show/localization}{localization},
+which rougly mean to ignore weak equivalences and focus ``locally'' on other maps.
+We will call the canonical functor $\gamma : \calC \to \Ho \calC$ the localization functor.
+
+\section{Extending functors over localization}
 Given two categories $\calC$ and $\calD$ and a functor $F : \calC \to \calD$,
 we may want to extend $F$ to $\Ho\cal C \to \Ho\cal D$.
 That is, we want $\tilde F$ such that the following diagram commutes
@@ -162,11 +167,14 @@ Yeah, we will introduce Kan extensions, the last part in Riehl's introductory bo
 
 \subsection{Week 2: Homtopical category}
 
-The defintion of homotopical category. If people are interested, we may focus on the examples.
+The defintion of homotopical category. We may focus on the examples.
+It may be a good time to introduce a little homological algebra,
+which is a rich source of examples and motivation,
+such that bar construction.
 
 \subsection{Week 3: Derived functors}
 
-Similarly, we should focus on examples. It may be nice to introduce a little homological algebras.
+Similarly, we should focus on examples.
 
 \subsection{Week 4: Enriched category}
 
