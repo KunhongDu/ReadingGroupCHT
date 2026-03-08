@@ -31,6 +31,9 @@
 \newcommand{\ChAb}{\mathbf{Ch}_\bullet(\mathbf{Ab})}
 \newcommand{\calC}{\mathcal{C}}
 \newcommand{\calD}{\mathcal{D}}
+\newcommand{\calM}{\mathcal{M}}
+\newcommand{\calN}{\mathcal{N}}
+\newcommand{\calV}{\mathcal{V}}
 
 % ---------- Title ----------
 \title{
@@ -170,7 +173,7 @@ The localization of weak homotopy equivalence factors through the localization o
 
 Whitehead theorem, i.e., every weak homotopy equivalence between CW complexes is a homotopy equivalence
 $\longrightsquigarrow$
-the dashed functor above restricts to an equivalence on the full subcategory of CW complexes.
+The dashed functor above restricts to an equivalence on the full subcategory of CW complexes.
 
 It turns out that $\Ho \Top_{he}$ also arises directly from the enrichement setting.
 Let $\underline{\Top}$ denote $\Top$ enriched over itself.
@@ -181,7 +184,21 @@ the statements above can be seen as sort of a comparison between
 two notions of ``homotopy category'' arising from different settings: the enriched one and the homotopical one.
 
 One of the main goals of this reading group is to understand Theorem 10.5.1,
-which generalizes the observation mentioned above.
+which generalizes the observation mentioned above:
+
+Let $\calV$ be a category with some structures and let $\underline{\calM}$
+be a $\calV$-homotopical category (whatever this means). Then there is a
+$\Ho\calV$-functor $\varphi : \underline{h\calM} \to \underline{\Ho\calM}$
+(however $h\calM$ is defined) whose underlying unenriched functor commutes
+with both localizations
+\[
+\begin{tikzcd}
+    \calM \arrow[d] \arrow[dr] & \\
+    h\calM \arrow[r, "\phi"] & \Ho\calM
+\end{tikzcd}
+\]
+and the restriction of $\varphi$ to fibrant-cofibrant objects (whatever this means)
+is fully faithful.
 
 \iffalse
 \section{An outline for the first 4 weeks}
