@@ -79,60 +79,74 @@
 \part{Motivation --- Mar 3, led by Aref}
 
 \section{To invert weak equivalences}
-In the (convenient) category $\Top$ of topological spaces,
-homotopy equivalence is a good equivalence relation,
+In the category $\Top$ of topological spaces,
+homotopy equivalence is a nice and useful notion of equivalence relation,
 so we can define the homotopy category $\Ho\Top$,
 whose objects are all the topological spaces
-but morphisms are equivalence classes of continuous maps up to homotopy equivalence.
+but morphisms are homotopy classes of continuous maps.
 Sometimes working in $\Ho\Top$ is easy since every homotopy equivalence becomes an isomorphism. 
 
-There are also other interesting notions of ``weak equivalences'' that are not actually equivalences.
-Again, in the category $\Top$ of topological spaces, we say a map $f : X \to Y$ is a
-\href{https://ncatlab.org/nlab/show/weak+homotopy+equivalence}{weak homotopy equivalence} if
-$$\pi_n(f) : \pi_n(X) \to \pi_n(Y)$$
-is an isomorphism for $n\ge 1$ and a bijection when $n = 0$.
-Clearly homotopy equivalence is a weak equivalence, and we have the classical Whitehead's theorem
-(which is not provable in HoTT!) saying that,
-every weak homotopy equivalence between CW-complexes is a homotopy equivalence.
-However, weak homotopy equivalences are generally not invertible
-(see \href{https://ncatlab.org/nlab/show/pseudocircle}{here} for a counterexample).
+There are also other interesting notions of ``weak equivalences'' that are not actually equivalences (which do not necessarily admit inverses).
+Again, in the category $\Top$ of topological spaces, we say a map $f : X \to Y$ is a weak homotopy equivalence if it induces a bijection on $\pi_0$, and for every choice of basepoint $x \in X$, the induced map
+\[
+\pi_n(X,x) \to \pi_n(Y,f(x))
+\]
+is an isomorphism for all $n \ge 1$.
+Clearly identity maps and homotopy equivalences are weak equivalences, but not all weak equivalences are homotopy equivalences (e.g. \href{https://ncatlab.org/nlab/show/Warsaw+circle}{Warsaw circle} has trivial homotopy groups, but it's not homotopy equivalent to the point). However, for a class of topological spaces with nice "local" behavior, called CW-complexes, we have the classical Whitehead's theorem, saying that 
+every weak homotopy equivalence between CW-complexes is a homotopy equivalence. 
 
-Another important example comes from the category of
+% This is not provable in HoTT in its full generality, as assuming this implies that the universe is hypercomplete, which is not generally true as HoTT admits models which are not hypercomplete. However, the truncated version of Whitehead's theorem should be provable in HoTT.
+% Back to the classical discussion, 
+Whitehead's theorem is closely related to another fact, the CW approximation theorem, which says every topological space $X$ is weakly equivalent to a CW-complex, and this construction is functorial. So there is functorial deformation on $\Top$ which goes to homotopically well-behaved spaces. 
+
+
+Another important example of weak equivalences comes from the category of
 \href{https://ncatlab.org/nlab/show/chain+complex}{chain complexes}.
-\href{https://ncatlab.org/nlab/show/quasi-isomorphism}{Quasi-isomor-phisms},
-as the name might indicate, are also generally not invertible.
+\href{https://ncatlab.org/nlab/show/quasi-isomorphism}{Quasi-isomorphisms},
+as the name might indicate, are also generally not invertible. This example will be explained in more detail next week.
 
-What we can do is formally add an invertible arrow to theses weak equivalences.
-We consider the following construction of $\Ho\Top_{whe}$.
-The objects are all the topological spaces.
-The morphisms between $X$ and $Y$ are the equivalence classes of finite zig-zags
+From the categorical point of view, these examples can be seen as categories equipped with a marked class of morphisms, called weak equivalences, such that it satisfies the \(2\)-out-of-\(6\) property, meaning that for any composable triple of arrows
+\[
+\begin{tikzcd}[column sep=large, row sep=large]
+\bullet \arrow[r,"f"] \arrow[dr,swap," g\circ f"] \arrow[drr,swap] 
+  & \bullet \arrow[d,"g"] \arrow[dr,"h\circ g"] \\
+& \bullet \arrow[r,swap,"h"] & \bullet
+\end{tikzcd}
+\]
+if \(g\circ f\) and \(h\circ g\) are in \(\mathcal{W}\), then \(f\), \(g\), \(h\), and \(h\circ g\circ f\) are also in \(\mathcal{W}\).  We call such a pair $(\mathcal{C}, \mathcal{W})$ a homotopical category. Then, the first idea that comes to mind is to formally add inverses to the weak equivalences to study the case where objects of $\mathcal{C}$ are considered up to weak equivalence rather than up to isomorphism. We call the resulting category the homotopy category of $\mathcal{C}$ and call it $\Ho_{\mathcal{W}}\mathcal{C}$, and we call the canonical functor $\gamma : \mathcal{C} \to \Ho_{\mathcal{W}}\mathcal{C}$ the localization.
+
+As the first attempt, we consider the following construction of $\Ho_{\mathcal{W}}\mathcal{C}$.
+The objects are objects of $\mathcal{C}$, and
+the morphisms between $X : \mathcal{C}$ and $Y : \mathcal{C}$ are the equivalence classes of finite zig-zags
 $$X \leftarrow Z_1 \rightarrow \cdots \leftarrow Z_{n} \to Y,$$
-suject to
+subject to
 \begin{enumerate}
-    \item all the arrows backwards are weak homotopy equivalences.
-    \item identity arrows can be removed and then composed.
+    \item All backward arrows are weak equivalences.
+    \item Identity arrows can be removed and then composed.
+
+    \item Adjacent weak equivalences in the form of $\stackrel{w}{\to} \stackrel{w}{\leftarrow}$ and $\stackrel{w}{\leftarrow} \stackrel{w}{\to}$ can be removed.
 \end{enumerate}
 
-Then a weak homotopy equivalence $X \stackrel{w}{\to} Y$ has an inverse given by
+Then a weak equivalence $X \stackrel{w}{\to} Y$ has an inverse given by
 $$Y \stackrel{w}{\leftarrow} X \stackrel{\id}{\to} X.$$
 
 However, this construction may not give a locally small category.
-That is, given a category $\mathcal C$ and a class of morphisms $W$ we want to want to invert,
-the resulting $\Ho_W \mathcal C(X,Y)$ may be a proper class
-(or in type theory, this means the type would lie in the next universe level).
+That is, given a homotopical category $(\mathcal{C} , \mathcal{W})$ where $\mathcal{C}$ is locally small,
+the resulting $\Ho_{\mathcal{W}}\mathcal{C}(X,Y)$ may be a proper class, as it is possible that non-equivalent zig-zags pass through every object of $\mathcal{C}$. Now we can state the first goal of the first phase of our reading group:
+\bigbreak
 
-This is one of the reasons why we need
+\textbf{Goal $\mathbf{I}$ : Find a construction for homotopy category that preserves locally smallness.}
+
+\bigbreak
+
+One way to do this is to use the setting of a
 \href{https://ncatlab.org/nlab/show/model+category}{model category}.
 With auxiliary data of fibrations and cofibrations,
-we can ensure the homotopy category we obtain is indeed locally small.
+we can ensure the homotopy category we obtain is indeed locally small. However, we'll see that we don't need all data of a model category for this purpose.
 
-This process is also called \href{https://ncatlab.org/nlab/show/localization}{localization},
-which rougly mean to ignore weak equivalences and focus ``locally'' on other maps.
-We will call the canonical functor $\gamma : \calC \to \Ho \calC$ the localization functor.
-
-\section{Extending functors over localization}
+\section{Homotopical Approximations of Functors}
 Given two categories $\calC$ and $\calD$ and a functor $F : \calC \to \calD$,
-we may want to extend $F$ to $\Ho\cal C \to \Ho\cal D$.
+we may want to extend $F$ to $\Ho\calC \to \Ho\calD$.
 That is, we want $\tilde F$ such that the following diagram commutes
 \[\begin{tikzcd}
 \calC \arrow[r,"F"] \arrow[d,"\gamma"'] & \calD \arrow[d,"\gamma"] \\
@@ -140,7 +154,7 @@ That is, we want $\tilde F$ such that the following diagram commutes
 \end{tikzcd}\]
 
 This is easy if $F$ preserves weak equivalences.
-But unfortunately, this is most of the time not the case.
+But this is most of the time not the case for generic functors we deal with in category theory.
 For example, the following two diagrams are (component-wise) homotopy equivalent
 
 \[
@@ -149,19 +163,25 @@ For example, the following two diagrams are (component-wise) homotopy equivalent
     * & S ^ 0 \arrow[l] \arrow[r] & *
 \end{tikzcd}
 \]
-But the colimit (a functor $\Top^{\bullet \leftarrow \bullet \rightarrow} \to \Top$) of the first row
+But the colimit (a functor $\Top^{\bullet \leftarrow \bullet \rightarrow \bullet} \to \Top$) of the first row
 is $S^1$, while the colimit of the second row is $*$. 
 
-So we have to compromise by considering a weaker notion of extension,
-i.e., Kan extension of the functor $F$ along $\gamma: \calC \to \Ho\calC$.
-This gives us the so-called derived functors.
-In particular, homotopy co/limits are then the derived functors of (strict) co/limits.
+The intuition is that preserving isomorphism of the homotopy categories requires preserving high data constructed over weak equivalences, but generic functors like (strict) colimit functor only cares about arrows. This establishes the next goal of the first phase of our reading group:
+
+\bigbreak
+
+\textbf{Goal $\mathbf{II}$: Find a universal property for the homotopical approximations of functors between homotopical categories.}
+
+\bigbreak
+
+ To do this, we'll consider a weaker notion of extension,
+i.e., Kan extension of the functor $F$ along $\gamma: \calC \to \Ho\calC$. We'll learn the role of Kan extensions next week. This idea gives us the so-called derived functors, which are the universal homotopical approximations for a functor. In particular, homotopy co/limits are then the derived functors of (strict) co/limits. We'll study derived functors in the third week.
 
 \section{``Weak equivalences are all that matter''}
 Traditionally, all the constructions mentioned above take place in model categories.
 But a generalization is possible: we can introduce a framework
 for constructing derived functors between categories equipped with a reasonable notion of
-weak equivalence. As Riehl said in the preface:
+weak equivalence. As Riehl states  in the preface:
 
 \begin{quote}
 ``The weak equivalences are all that matter in abstract homotopy theory, showing
@@ -175,16 +195,11 @@ appropriate model structures for the diagrams do not necessarily exist.
 Also, this philosophy could be inspiring for type theorists.
 In type theories, we rarely have a nice model structure,
 but we always have a nice notion of equivalence.
-So we would at least hope studying this book can help us understand
+So we would at least hope that working with this setting can be useful to understand
 homotopy co/limits in type theories like HoTT,
 or compare homotopy co/limits and strict co/limits in 2LTT.
-%In 2.2, the book introduces this notion:
-%a left deformation on $\calC$ is an endofunctor $Q$
-%with a weak equivalence $Q \Rightarrow 1$.
-%Doesn't it resemble modality?
-%We hope they can be somehow connected.
 
-\section{A generalization of Whitehead theorem}
+\section{Enriched  Generalization of Whitehead Theorem}
 
 Now that we have introduced the notion of localization,
 we can reinterpret the following statements in classical algebraic topology:
@@ -201,23 +216,29 @@ The localization of weak homotopy equivalence factors through the localization o
 
 Whitehead theorem, i.e., every weak homotopy equivalence between CW complexes is a homotopy equivalence
 $\longrightsquigarrow$
-The dashed functor above restricts to an equivalence on the full subcategory of CW complexes.
+The dashed functor above restricts to an equivalence on the full subcategory of CW-complexes.
 
-It turns out that $\Ho \Top_{he}$ also arises directly from the enrichement setting.
-Let $\underline{\Top}$ denote $\Top$ enriched over itself.
+It turns out that $\Ho \Top_{he}$ also arises directly from the enrichment setting.
+Let $\underline{\Top}$ denote $\Top$ (a cartesian closed category of spaces) enriched over itself.
 Define $h\Top$ to be the category with objects the same as $\Top$ but
 $$h\Top(X,Y) := \pi_0\underline{\Top}(X,Y).$$
 Note that $h\Top$ is equivalent to $\Ho\Top_{he}$, and hence
 the statements above can be seen as sort of a comparison between
-two notions of ``homotopy category'' arising from different settings: the enriched one and the homotopical one.
+two notions of ``homotopy category'' arising from different settings: the categorical one (defined via enrichment data) and the homotopical one (defined via weak equivalences).
 
-One of the main goals of this reading group is to understand Theorem 10.5.1,
+One of the main goals of the first phase of this reading group is to understand Theorem 10.5.1 of Emily's book,
 which generalizes the observation mentioned above:
 
-Let $\calV$ be a category with some structures and let $\underline{\calM}$
-be a $\calV$-homotopical category (whatever this means). Then there is a
-$\Ho\calV$-functor $\varphi : \underline{h\calM} \to \underline{\Ho\calM}$
-(however $h\calM$ is defined) whose underlying unenriched functor commutes
+\bigbreak
+
+\textbf{
+Goal $\mathbf{III}$: Study the Enriched Generalization of Whitehead's Theorem.}
+
+\bigbreak
+
+Let $\calV$ be a homotopical category with enough structures (closed symmetric monoidal), and let $\underline{\calM}$
+be a homotopical category enriched over $\calV$. When the homotopical data of $\calV$ and $\calM$ is nicely compatible with the enrichment and other categorical data, then Theorem 10.5.1 (proved by Shulman) states that there is a
+$\Ho\calV$-functor $\varphi : \underline{h\calM} \to \underline{\Ho\calM}$  whose underlying unenriched functor commutes
 with both localizations
 \[
 \begin{tikzcd}
@@ -226,7 +247,7 @@ with both localizations
 \end{tikzcd}
 \]
 and the restriction of $\varphi$ to fibrant-cofibrant objects (whatever this means)
-is fully faithful.
+is fully faithful. Here $h\calM$ is the localization over homotopy equivalences defined via the enrichment data, and $\Ho\calM$ is the localization over weak equivalences of $\calM$.
 
 \newpage
 \part{Derived functors, featuring Kan extensions and homological algebra --- Mar 10, led by Mark}
