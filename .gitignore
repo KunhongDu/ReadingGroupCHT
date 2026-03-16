@@ -6,3 +6,4 @@
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+*.synctex.gz.sum.synctex

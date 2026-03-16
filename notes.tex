@@ -7,6 +7,10 @@
 \setmainfont{Libertinus Sans}[Scale=1.1]
 \setmathfont{Libertinus Math}[Scale=1.1]
 
+% ---------- Color ------------
+\usepackage{xcolor}
+\definecolor{lightgreen}{RGB}{200,255,200}
+
 % ---------- Page layout ----------
 \usepackage[a4paper,margin=1in]{geometry}
 
@@ -135,14 +139,14 @@ That is, given a homotopical category $(\mathcal{C} , \mathcal{W})$ where $\math
 the resulting $\Ho_{\mathcal{W}}\mathcal{C}(X,Y)$ may be a proper class, as it is possible that non-equivalent zig-zags pass through every object of $\mathcal{C}$. Now we can state the first goal of the first phase of our reading group:
 \bigbreak
 
-\textbf{Goal $\mathbf{I}$ : Find a construction for homotopy category that preserves locally smallness.}
+\colorbox{lightgreen}{Goal $\mathbf{I}$ : Find a construction for homotopy category that preserves locally smallness.}
 
 \bigbreak
 
 One way to do this is to use the setting of a
 \href{https://ncatlab.org/nlab/show/model+category}{model category}.
 With auxiliary data of fibrations and cofibrations,
-we can ensure the homotopy category we obtain is indeed locally small. However, we'll see that we don't need all data of a model category for this purpose.
+we can ensure the homotopy category we obtain is indeed locally small. 
 
 \section{Homotopical Approximations of Functors}
 Given two categories $\calC$ and $\calD$ and a functor $F : \calC \to \calD$,
@@ -166,16 +170,23 @@ For example, the following two diagrams are (component-wise) homotopy equivalent
 But the colimit (a functor $\Top^{\bullet \leftarrow \bullet \rightarrow \bullet} \to \Top$) of the first row
 is $S^1$, while the colimit of the second row is $*$. 
 
-The intuition is that preserving isomorphism of the homotopy categories requires preserving high data constructed over weak equivalences, but generic functors like (strict) colimit functor only cares about arrows. This establishes the next goal of the first phase of our reading group:
+The intuition is that preserving isomorphism of the homotopy categories requires preserving high data
+constructed over weak equivalences, but generic functors like (strict) colimit functor only cares about arrows. 
+This establishes the next goal of the first phase of our reading group:
 
 \bigbreak
 
-\textbf{Goal $\mathbf{II}$: Find a universal property for the homotopical approximations of functors between homotopical categories.}
+\colorbox{lightgreen}{Goal $\mathbf{II}$: Find a universal property for the homotopical approximations of functors}\\
+\colorbox{lightgreen}{between homotopical categories.}
 
 \bigbreak
 
  To do this, we'll consider a weaker notion of extension,
-i.e., Kan extension of the functor $F$ along $\gamma: \calC \to \Ho\calC$. We'll learn the role of Kan extensions next week. This idea gives us the so-called derived functors, which are the universal homotopical approximations for a functor. In particular, homotopy co/limits are then the derived functors of (strict) co/limits. We'll study derived functors in the third week.
+i.e., Kan extension of the functor $F$ along $\gamma: \calC \to \Ho\calC$. 
+We'll learn the role of Kan extensions next week. This idea gives us the so-called derived functors, 
+which are the universal homotopical approximations for a functor. 
+In particular, homotopy co/limits are then the derived functors of (strict) co/limits. 
+We'll study derived functors in the third week.
 
 \section{``Weak equivalences are all that matter''}
 Traditionally, all the constructions mentioned above take place in model categories.
@@ -224,20 +235,22 @@ Define $h\Top$ to be the category with objects the same as $\Top$ but
 $$h\Top(X,Y) := \pi_0\underline{\Top}(X,Y).$$
 Note that $h\Top$ is equivalent to $\Ho\Top_{he}$, and hence
 the statements above can be seen as sort of a comparison between
-two notions of ``homotopy category'' arising from different settings: the categorical one (defined via enrichment data) and the homotopical one (defined via weak equivalences).
+two notions of ``homotopy category'' arising from different settings: the categorical one 
+(defined via enrichment data) and the homotopical one (defined via weak equivalences).
 
 One of the main goals of the first phase of this reading group is to understand Theorem 10.5.1 of Emily's book,
 which generalizes the observation mentioned above:
 
 \bigbreak
 
-\textbf{
-Goal $\mathbf{III}$: Study the Enriched Generalization of Whitehead's Theorem.}
+\colorbox{lightgreen}{Goal $\mathbf{III}$: Study the Enriched Generalization of Whitehead's Theorem.}
 
 \bigbreak
 
 Let $\calV$ be a homotopical category with enough structures (closed symmetric monoidal), and let $\underline{\calM}$
-be a homotopical category enriched over $\calV$. When the homotopical data of $\calV$ and $\calM$ is nicely compatible with the enrichment and other categorical data, then Theorem 10.5.1 (proved by Shulman) states that there is a
+be a homotopical category enriched over $\calV$. When the homotopical data of $\calV$ and $\calM$ 
+is nicely compatible with the enrichment and other categorical data, then Theorem 10.5.1 (proved by Shulman) 
+states that there is a
 $\Ho\calV$-functor $\varphi : \underline{h\calM} \to \underline{\Ho\calM}$  whose underlying unenriched functor commutes
 with both localizations
 \[
@@ -247,7 +260,8 @@ with both localizations
 \end{tikzcd}
 \]
 and the restriction of $\varphi$ to fibrant-cofibrant objects (whatever this means)
-is fully faithful. Here $h\calM$ is the localization over homotopy equivalences defined via the enrichment data, and $\Ho\calM$ is the localization over weak equivalences of $\calM$.
+is fully faithful. Here $h\calM$ is the localization over homotopy equivalences 
+defined via the enrichment data, and $\Ho\calM$ is the localization over weak equivalences of $\calM$.
 
 \newpage
 \part{Derived functors, featuring Kan extensions and homological algebra --- Mar 10, led by Mark}
