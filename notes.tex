@@ -17,23 +17,51 @@
 
 % ---------- Packages ----------
 \usepackage{tikz-cd}
+\tikzset{
+  no line/.style={draw=none,
+    commutative diagrams/every label/.append style={/tikz/auto=false}}}
 
 % ---------- Table of contents -------
 \hypersetup{linkcolor=black}
 \renewcommand{\partname}{Week}
 
+% ---------- Environments ---------
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[part]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\renewcommand{\thetheorem}{\arabic{theorem}}
+
 % ---------- Custom commands ----------
 \newcommand{\Lan}{\operatorname{Lan}}
 \newcommand{\Ran}{\operatorname{Ran}}
 \newcommand{\Ho}{\operatorname{Ho}}
+\newcommand{\Hom}{\operatorname{Hom}}
 \newcommand{\id}{\operatorname{id}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\colim}{\operatorname{colim}}
 \newcommand{\Top}{\mathbf{Top}}
-\newcommand{\ChAb}{\mathbf{Ch}_\bullet(\mathbf{Ab})}
+\newcommand{\Ch}{\mathbf{Ch}}
+\newcommand{\Ab}{\mathbf{Ab}}
+\newcommand{\ChAb}{\mathbf{Ch}(\mathbf{Ab})}
+\newcommand{\bZ}{\mathbb Z}
 \newcommand{\calC}{\mathcal{C}}
 \newcommand{\calD}{\mathcal{D}}
+\newcommand{\calE}{\mathcal{E}}
+\newcommand{\calF}{\mathcal{F}}
 \newcommand{\calM}{\mathcal{M}}
 \newcommand{\calN}{\mathcal{N}}
 \newcommand{\calV}{\mathcal{V}}
+\newcommand{\calW}{\mathcal{W}}
+\newcommand{\bfL}{\mathbf{L}}
+\newcommand{\bbL}{\mathbb{L}}
+\newcommand{\bfset}{\mathbf{Set}}
 
 % ---------- Title ----------
 \title{
@@ -48,7 +76,7 @@
 \tableofcontents
 \newpage
 
-\part{Motivation --- Mar 3}
+\part{Motivation --- Mar 3, led by Aref}
 
 \section{To invert weak equivalences}
 In the (convenient) category $\Top$ of topological spaces,
@@ -200,40 +228,254 @@ with both localizations
 and the restriction of $\varphi$ to fibrant-cofibrant objects (whatever this means)
 is fully faithful.
 
-\iffalse
-\section{An outline for the first 4 weeks}
+\newpage
+\part{Derived functors, featuring Kan extensions and homological algebra --- Mar 10, led by Mark}
+\setcounter{section}{0}
+\section{Homotopical category}
+\begin{definition}
+    (Def 2.1.1)
+    A \emph{homotopical category} is a category $\calM$ with a wide subcategory $\calW$ (containing all objects of $\calM$)
+    satisfying 2-of-6 property:
+    for any composable triple of arrows $f,g,h$,
+    if $hg,gf\in \calW$, then $f,g,h,hgf \in \calW$.
+    The arrows in $\calW$ are called weak equivalences.
+\end{definition}
 
-We hope to cover most of the first 3 chapters in the first 4 weeks.
+\begin{remark}
+    2-of-6 implies 2-of-3.
+\end{remark}
 
-\subsection{Week 1: Kan extensions}
-\begin{quote}
-``All concepts are Kan extensions.''
-\end{quote}
+\begin{definition}[Def 2.1.6]
+    The \emph{homotopy category} $\Ho\calM$ of a homotopical category $(\calM, \calW)$
+    is the formal localization of $\calM$ at the subcategory $\calW$. 
+\end{definition}
 
-Yeah, we will introduce Kan extensions, the last part in Riehl's introductory book on category theory:
-\begin{enumerate}
-    \item the defintion
-    \item a computation in nice settings
-    \item nice Kan extensions that we only care
-    \item why ``all concepts are Kan extensions.''
-    \item time permitted, we might say a little bit about its application in simplicial sets.
-\end{enumerate}
+\begin{remark}
+    The localization is obtained by formally inverting morphisms in $\calW$.
+    It is not guaranteed to be locally small, but we put this issue aside for now.
+\end{remark}
 
-\subsection{Week 2: Homtopical category}
+\begin{proposition}
+    \label{universal-property-localization}
+    There is a localization functor $\gamma : \calM \to \Ho\calM$ with
+    the universal property that for any $F : \calM \to \calN$ sending weak equivalences to isomorphisms
+    factors uniquely through $\gamma$:
 
-The defintion of homotopical category. We may focus on the examples.
-It may be a good time to introduce a little homological algebra,
-which is a rich source of examples and motivation,
-such that bar construction.
+    \[
+    \begin{tikzcd}
+        \calM \arrow[d, "\gamma"] \arrow[dr, "F"] & \\
+        \Ho\calM \arrow[r, dashed] & \calN
+    \end{tikzcd} 
+    \]
 
-\subsection{Week 3: Derived functors}
+\end{proposition}
 
-Similarly, we should focus on examples.
+\begin{definition}
+    A functor between two homotopical categories is \emph{homotopical} if it preserves weak equivalences.
+\end{definition}
 
-\subsection{Week 4: Enriched category}
+\begin{remark}
+    If $F : \calM \to \calN$ is homotopical, then by the Proposition \ref{universal-property-localization},
+    there exists a unique functor $F : \Ho\calM \to \Ho\calN$,
+    such that the following square commutes
+    \[
+    \begin{tikzcd}
+        \calM \arrow[d, "\gamma"] \arrow[r, "F"] & \calN \arrow[d, "\gamma"]\\
+        \Ho\calM \arrow[r, dashed, "F"] & \Ho\calN
+    \end{tikzcd} 
+    \]
+\end{remark}
 
-The idea of enrichement is actually quite accessible.
-Again, I think we should focus on examples.
-\fi
+Singular (co)homology chain complex functor from $\Top$ to $\ChAb$
+(see Section \ref{Homological-algebra}) is homotopical.
+It's nice, but in practice, functors of interests are rarely homotopical.
+Counterexamples are $\colim$, e.g., (strict) pushout of spaces, and $-\otimes A : \ChAb \to \ChAb $
+for most of abelian groups $A$.
+For this reason, we introduce homotopical approximations.
+Instead of requiring a strict commutativity, we allow lax transformations
+comparing the original functor and its approximation.
+
+\begin{definition}(Def 2.1.17)
+    Let $F : \calM \to \calN$ be a functor between homotopical categories.
+    A \emph{total left derived functor} $\bfL F$ is a right Kan extension
+    (see Section \ref{Kan-extension}) of $\delta F$ along
+    $\gamma$:
+    \[
+    \begin{tikzcd}
+    \calM \arrow[d,"\gamma"] \arrow[rr,"F"] 
+    & {} 
+    & \calN \arrow[d,"\delta"] \\
+    \Ho\calM \arrow[rr,dashed,"\bfL F"'] 
+    & {} \arrow[u,Rightarrow,"\alpha"',shorten <=6pt,shorten >=6pt]
+    & \Ho\calN
+    \end{tikzcd}
+    \]
+\end{definition}
+
+Note that $\bfL F$ is a functor between homotopy categories,
+In practice, it is better not to work only on homotopy categories,
+since they can be badly behaved—for instance, they often have very few (ordinary) colimits.
+Instead, we would like to consider the lift of $\bfL F$ to the original categories.
+
+\begin{definition}(Def 2.1.19)
+    A \emph{left derived functor} of $F : \calM \to \calN$ is a homotopical functor
+    $\bbL F : \calM \to \calN$ with a natural transformations $\lambda : \bbL F \to F$
+    such that $(\delta\bbL F, \delta\lambda)$ is a total left derived functor of $F$.
+    \[
+    \begin{tikzcd}
+        \calM \arrow[d,"\gamma"]
+            \arrow[rr,"F", bend left=20]{r}[name=UU]{}
+            \arrow[rr,"\bbL F"', bend right=20]{r}[name=UD]{}
+        &
+        \arrow[Leftarrow, to path = (UU) -- (UD)\tikztonodes]{}{\lambda}
+        & \calN \arrow[d,"\delta"] \\
+        \Ho\calM \arrow[rr,dashed,"\sigma\bbL F"'] 
+        & {}
+        & \Ho\calN
+    \end{tikzcd}
+    \]
+\end{definition}
+
+\section{Kan extension}\label{Kan-extension}
+Intuitively, Kan extension of $F : \calC \to \calE$ along $K : \calC \to \calD$
+is a best approximation of the lifting problem
+\[
+\begin{tikzcd}
+    \calC \arrow[d, "K"] \arrow[r, "F"] & \calE \\
+    \calD \arrow[ur, dashed, "?"'] &  
+\end{tikzcd}
+\]
+which usually does not have a strict solution.
+
+\begin{definition}(Def 1.1.1)
+    Given functors $F : \mathcal{C} \to \mathcal{E}$, $K : \mathcal{C} \to \mathcal{D}$, a \emph{left Kan extension} of $F$ along $K$ is a functor 
+    \[\Lan_K F : \mathcal{D} \to \mathcal{E}\] together with a natural transformation
+    \[\eta : F \Rightarrow (\Lan_K F)\circ K\]
+    such that for any other such pair $(G : \mathcal{D} \to \mathcal{E},\; \gamma : F \Rightarrow GK)$,
+    $\gamma$ factors uniquely through $\eta$.
+
+    Dually, a \emph{right Kan extension} of $F$ along $K$ is a functor
+    \[\mathrm{Ran}_K F : \mathcal{D} \to \mathcal{E}\]
+    together with a natural transformation
+    \[\epsilon : (\mathrm{Ran}_K F)\circ K \Rightarrow F\]
+    such that for any $(G : \mathcal{D} \to \mathcal{E},\; \delta : GK \Rightarrow F)$,
+    $\delta$ factors uniquely through $\epsilon$.
+\end{definition}
+
+By the Yoneda lemma, we see the the universal property of left Kan extensions
+is equivalent to the assertion that
+$(\Lan_K F, \eta)$ represents the functor $\calE ^{\calC}(F, -\circ K) : \calE ^{\calD} \to \bfset$.
+Dually, $(\Ran_K F, \epsilon)$ corepresents the functor $\calE ^{\calC}(-\circ K, F) : \calE ^{\calD} \to \bfset$.
+
+We further observe that if the left and right Kan extensions
+of all functors from $\calC$ to $\calE$
+along a fixed functor $K : \calC \to \calD$ exist,
+then $\Lan_K$ and $\Ran_K$ encode the left and right adjoints
+of $K^* : \calE ^{\calD} \to \calE ^{\calC}$ respectively.
+
+\[
+\begin{tikzcd}
+    {\calE}^{\calC} \arrow[rr, "\Lan_K"{name = Lan, description}, bend left=45]
+    \arrow[rr, "\Ran_K"{name = Ran, description}, bend right=45]
+    & & {\calE}^{\calD} \arrow[ll, "K^*"{name = K, description}]
+    \arrow[phantom, from=K, to=Lan, "\dashv" rotate=-90, no line]
+    \arrow[phantom, from=Ran, to=K, "\dashv" rotate=-90, no line]
+\end{tikzcd}
+\]
+
+There are so many example of extensions. See ``1.4 All concepts'' for some of them justifying the
+slogan that ``All concepts are Kan extensions''.
+
+In some good settings, Kan extensions always exist and can be computed concretly:
+\begin{theorem}(Th 1.2.1)
+    When $\calC$ is small, $\calD$ is locally small, and $\calE$ is cocomplete,
+    the left Kan extension of any functor $F : \calC \to \calE$ along any functor
+    $K : \calC \to \calD$ is computed at $d \in \calD$ by the colimit
+    \[\Lan_K F(d)= \int^{c \in \mathcal{C}} \coprod_{i \in \mathcal{D}(Kc,d)} Fc\]
+    and in particular necessarily exists.
+\end{theorem}
+
+Here $\int^{\calC}H$ is the coend for a functor $H : \calC^{op} \times \calC \to \calE$,
+defined as an object in $\calE$ with arrows $\alpha_c : H(c,c) \to \int^{\calC}H$ for each $c \in \calC$
+collectively universal with respect to
+\[
+\begin{tikzcd}
+    H(c',c) \arrow[r, "f_*"] \arrow[d,"f^*"'] & H(c',c') \arrow[d, "\alpha_{c'}"] \\
+    H(c,c) \arrow[r, "\alpha_c"] & \int^{\calC} H
+\end{tikzcd}
+\]
+
+The coend is isomorphic to $$\colim(K/d \stackrel{U}{\to} \calC \stackrel{F}{\to} \calE)$$
+where $K/d$ is the comma category with objects $(c, Kc \to d)$ and obvious morphisms
+and $U$ is the forgetful functor.
+
+Sometimes the category we care about, such that homotopy category, might not have all (co)limits,
+(To be finished)
+
+\begin{definition}
+    A left Kan extension $(\Lan_K F, \eta)$ is \emph{preserved} by $L : \calE \to \calF$ if the
+    whiskered composite $(L\Lan_K F, L \eta)$ is a left Kan extension of $LF$ along $K$.
+\end{definition}
+
+\begin{definition}(Def 1.3.4)
+    A right Kan extension if \emph{pointwise} if it is preserved by representable functors $\calE(e,-)$ for all $e \in \calE$.
+\end{definition}
+
+\begin{remark}
+    Pointwise left Kan extension is not simply defined as ``preserved by corepresentable'' since the variance does not match.
+    Instead, a left Kan extension is pointwise if its corresponding right Kan extension
+    under $(-)^{op}$ is a pointwise right Kan extension.
+\end{remark}
+
+\section{Homological algebra}\label{Homological-algebra}
+(The following discussion applies to any \href{https://ncatlab.org/nlab/show/abelian+category}{abelian category},
+but we will only focus on the origin of this concept $\Ab$, the catgeory of abelian groups.)
+
+On the way to define \href{https://ncatlab.org/nlab/show/singular+homology}{singular homology} of a topological space $X$,
+we obtain an intermediate product, the singular chain complexes $C_\bullet(X)$:
+\[
+    C_0(X) \stackrel{d_1}{\leftarrow} C_1(X) \stackrel{d_2}{\leftarrow} C_2(X)
+    \cdots \stackrel{d_n}{\leftarrow} C_n(X) \stackrel{d_{n+1}}{\leftarrow} \cdots
+\]
+with the property that $d_i\circ d_{i+1} = 0$ for all $i$.
+It follows that $\im(d_{i+1})$ is a subgroup of $\ker(d_i)$,
+thus we can define the homology groups as
+$$H_i(X) := \ker(d_{i}) / \im(d_{i+1}). $$
+
+Forget about topology and abstract the notion, we can just say a (bounded below) chain complex of abelian groups is
+a sequence of abelian groups $C_\bullet$:
+\[
+    C_0 \stackrel{d_1}{\leftarrow} C_1 \stackrel{d_2}{\leftarrow} C_2
+    \cdots \stackrel{d_n}{\leftarrow} C_n \stackrel{d_{n+1}}{\leftarrow} \cdots
+\]
+such that $d_i \circ d_{i+1} = 0$ for all $i$.
+
+A morphism between two chain complexes is a sequence of map between the component such that all the squares commute.
+We denote the category of chain complexes of abelian group as $\ChAb$.
+
+With homology, we can define the notion of quasi-isomorphisms: a map between $f_\bullet: C_\bullet \to D_\bullet$
+such that $H_i(f) : H_i(C_\bullet) \to H_i(D_\bullet)$ is an isomorphism for all $i$.
+Quasi-isomorphisms satisfy the 2-of-6 property, so they forms a class of weak equivalence.
+
+Let $F$ be an endofunctor of $\Ab$, then it induces an endofunctor $F$ of $\ChAb$.
+The bad thing is that it rarely preserves homology or preserves quasi-isomorphism.
+
+Apply $-\otimes \bZ/2$ (see \href{https://ncatlab.org/nlab/show/tensor+product+of+abelian+groups}{this} for more) to
+\[
+    \cdots \longrightarrow 0 \longrightarrow \bZ \stackrel{\times 2}{\longrightarrow} \bZ \longrightarrow 0
+\]
+and we obtain
+\[
+    \cdots \longrightarrow 0 \longrightarrow \bZ/2 \stackrel{\times 2}{\longrightarrow} \bZ/2 \longrightarrow 0
+\]
+But the $H_2$ of the first chain complex is $0$ while the for the second it's $\bZ/2$.
+
+$\Hom_{\bZ}(\bZ/2, -)$ (the right adjoint of $-\otimes \bZ/2$) doesn't preserve homology either (see Ex 2.1.15).
+
+For the construction of the derived functor of $-\otimes A$, see Week \ref{part-3}.
+
+\newpage
+\part{Derived functors via deformations, featuring classical homological algebra --- Mar 17, led by}
+\label{part-3}
 
 \end{document}
