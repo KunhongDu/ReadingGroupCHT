@@ -64,12 +64,12 @@ Again, in the category $\Top$ of topological spaces, we say a map $f : X \to Y$ 
 \pi_n(X,x) \to \pi_n(Y,f(x))
 \]
 is an isomorphism for all $n \ge 1$.
-Clearly identity maps and homotopy equivalences are weak equivalences, but not all weak equivalences are homotopy equivalences (e.g. \href{https://ncatlab.org/nlab/show/Warsaw+circle}{Warsaw circle} has trivial homotopy groups, but it's not homotopy equivalent to the point). However, for a class of topological spaces with nice "local" behavior, called CW complexes, we have the classical Whitehead's theorem, saying that 
-every weak homotopy equivalence between CW complexes is a homotopy equivalence. 
+Clearly identity maps and homotopy equivalences are weak equivalences, but not all weak equivalences are homotopy equivalences (e.g. \href{https://ncatlab.org/nlab/show/Warsaw+circle}{Warsaw circle} has trivial homotopy groups, but it's not homotopy equivalent to the point). However, for a class of topological spaces with nice "local" behavior, called CW-complexes, we have the classical Whitehead's theorem, saying that 
+every weak homotopy equivalence between CW-complexes is a homotopy equivalence. 
 
 % This is not provable in HoTT in its full generality, as assuming this implies that the universe is hypercomplete, which is not generally true as HoTT admits models which are not hypercomplete. However, the truncated version of Whitehead's theorem should be provable in HoTT.
 % Back to the classical discussion, 
-Whitehead's theorem is closely related to another fact, the CW approximation theorem, which says every topological space $X$ is weakly equivalent to a CW complex, and this construction is functorial. So there is functorial deformation on $\Top$ which goes to homotopically well-behaved spaces. 
+Whitehead's theorem is closely related to another fact, the CW approximation theorem, which says every topological space $X$ is weakly equivalent to a CW-complex, and this construction is functorial. So there is functorial deformation on $\Top$ which goes to homotopically well-behaved spaces. 
 
 
 Another important example of weak equivalences comes from the category of
@@ -77,7 +77,15 @@ Another important example of weak equivalences comes from the category of
 \href{https://ncatlab.org/nlab/show/quasi-isomorphism}{Quasi-isomorphisms},
 as the name might indicate, are also generally not invertible. This example will be explained in more detail next week.
 
-From the categorical point of view, these examples can be seen as categories with a marked class of morphisms, called weak equivalences. We call such a pair $(\mathcal{C}, \mathcal{W})$ a homotopical category. Then, the first idea that comes to mind is to formally add inverses to the weak equivalences to study the case where objects of $\mathcal{C}$ are considered up to weak equivalence rather than up to isomorphism. We call the resulting category the homotopy category of $\mathcal{C}$ and call it $\Ho_{\mathcal{W}}\mathcal{C}$, and we call the canonical functor $\gamma : \mathcal{C} \to \Ho_{\mathcal{W}}\mathcal{C}$ the localization.
+From the categorical point of view, these examples can be seen as categories equipped with a marked class of morphisms, called weak equivalences, such that it satisfies the \(2\)-out-of-\(6\) property, meaning that for any composable triple of arrows
+\[
+\begin{tikzcd}[column sep=large, row sep=large]
+\bullet \arrow[r,"f"] \arrow[dr,swap," g\circ f"] \arrow[drr,swap] 
+  & \bullet \arrow[d,"g"] \arrow[dr,"h\circ g"] \\
+& \bullet \arrow[r,swap,"h"] & \bullet
+\end{tikzcd}
+\]
+if \(g\circ f\) and \(h\circ g\) are in \(\mathcal{W}\), then \(f\), \(g\), \(h\), and \(h\circ g\circ f\) are also in \(\mathcal{W}\).  We call such a pair $(\mathcal{C}, \mathcal{W})$ a homotopical category. Then, the first idea that comes to mind is to formally add inverses to the weak equivalences to study the case where objects of $\mathcal{C}$ are considered up to weak equivalence rather than up to isomorphism. We call the resulting category the homotopy category of $\mathcal{C}$ and call it $\Ho_{\mathcal{W}}\mathcal{C}$, and we call the canonical functor $\gamma : \mathcal{C} \to \Ho_{\mathcal{W}}\mathcal{C}$ the localization.
 
 As the first attempt, we consider the following construction of $\Ho_{\mathcal{W}}\mathcal{C}$.
 The objects are objects of $\mathcal{C}$, and
@@ -180,7 +188,7 @@ The localization of weak homotopy equivalence factors through the localization o
 
 Whitehead theorem, i.e., every weak homotopy equivalence between CW complexes is a homotopy equivalence
 $\longrightsquigarrow$
-The dashed functor above restricts to an equivalence on the full subcategory of CW complexes.
+The dashed functor above restricts to an equivalence on the full subcategory of CW-complexes.
 
 It turns out that $\Ho \Top_{he}$ also arises directly from the enrichment setting.
 Let $\underline{\Top}$ denote $\Top$ (a cartesian closed category of spaces) enriched over itself.
