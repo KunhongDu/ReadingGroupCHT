@@ -24,6 +24,8 @@
 \tikzset{
   no line/.style={draw=none,
     commutative diagrams/every label/.append style={/tikz/auto=false}}}
+\usetikzlibrary{arrows.meta}
+\tikzcdset{arrow style=tikz, diagrams={>=to}}
 
 % ---------- Table of contents -------
 \hypersetup{linkcolor=black}
@@ -52,6 +54,7 @@
 \newcommand{\colim}{\operatorname{colim}}
 \newcommand{\Top}{\mathbf{Top}}
 \newcommand{\Ch}{\mathbf{Ch}}
+\newcommand{\Mod}{\mathbf{Mod}}
 \newcommand{\Ab}{\mathbf{Ab}}
 \newcommand{\ChAb}{\mathbf{Ch}(\mathbf{Ab})}
 \newcommand{\bZ}{\mathbb Z}
@@ -510,7 +513,318 @@ $\Hom_{\bZ}(\bZ/2, -)$ (the right adjoint of $-\otimes \bZ/2$) doesn't preserve 
 For the construction of the derived functor of $-\otimes A$, see Week \ref{part-3}.
 
 \newpage
-\part{Derived functors via deformations --- Mar 17, led by}
+\part{Derived functors via deformations --- Mar 17, led by Kunhong}
 \label{part-3}
+\setcounter{section}{0}
+
+This week, we discussed the construction of derived functors via deformation.
+The idea is that: given $F : \calM \to \calN$, we desire to find
+a nice ``retraction'' $Q : \calM \to \calM_Q$, where $\calM_Q$ is a subcategory of $\calM$,
+such that $F$ restricted on $\calM_Q$ is homotopical:
+
+\[
+\begin{tikzcd}
+    \calM \arrow[dr, shift left=1, "Q"] \arrow[rr, "F"] & & \calN \\
+    & \calM_Q \arrow[ul, shift left=1, hookrightarrow, "i"] \arrow[ur, "Fi \text{, \emph{homotopical}}"'] &
+\end{tikzcd}
+\]
+
+\section{A little bit of model category}
+Since the idea of deformation generalizes constructions from model category theory, 
+it is helpful to compare the two. We will not go deeply into the theory, 
+but instead only list some definitions and basic notions.
+There's whole part of model category in Emily's book, and we hope to explore it further sometime later.
+
+\begin{definition}
+A \href{https://ncatlab.org/nlab/show/weak+factorization+system}{\emph{weak factorization system}}
+on a category $\mathcal{C}$ is a pair of classes of morphisms 
+$(\mathcal{L}, \mathcal{R})$ such that:
+\begin{enumerate}
+    \item \textbf{Factorization:} Every morphism $f: X \to Y$ in $\mathcal{C}$ can be factored as
+    \[
+        f = r \circ \ell, \quad \ell \in \mathcal{L},\ r \in \mathcal{R}.
+    \]
+    \item \textbf{Lifting:} $\mathcal{L}$ is exactly the class of morphisms having the left lifting property 
+    with respect to all morphisms in $\mathcal{R}$, and $\mathcal{R}$ is exactly the class of morphisms having 
+    the right lifting property with respect to all morphisms in $\mathcal{L}$.
+    That is, for all commutative squares
+    \[
+    \begin{tikzcd}
+    A \arrow[d, "\ell"'] \arrow[r] & X \arrow[d, "r"] \\
+    B \arrow[r] \arrow[ru, dashed] & Y
+    \end{tikzcd}
+    \]
+    there exists a diagonal filler whenever $\ell \in \mathcal{L}$ and $r \in \mathcal{R}$.
+\end{enumerate}
+We denote this by $(\mathcal{L},\mathcal{R})$ being a weak factorization system on $\mathcal{C}$.
+
+A  weak factorization system $(\mathcal{L}, \mathcal{R})$ is \emph{functorial}
+the choice of factorization is functorial. 
+That is, there exists a functor
+\[
+\mathcal{C}^{\Delta[1]} \to \mathcal{C}^{\Delta[2]}
+\]
+assigning to each morphism $f: X \to Y$ a factorization
+\[
+f = r(f) \circ \ell(f), \quad \ell(f) \in \mathcal{L},\ r(f) \in \mathcal{R},
+\]
+in a way that is natural in $f$.
+\end{definition}
+
+\begin{definition}
+A \href{https://ncatlab.org/nlab/show/model+category}{\emph{model category}} is
+a complete, cocomplete category $\mathcal{C}$ with three distinguished classes of morphisms:
+\[
+\mathrm{Cof}, \quad \mathrm{Fib}, \quad \mathrm{W},
+\]
+called \emph{cofibrations}, \emph{fibrations}, and \emph{weak equivalences}, respectively, such that:
+
+\begin{enumerate}
+    \item The class $\mathrm{W}$ contains all isomorphisms and satisfies the \emph{two-out-of-three} property:  
+    if $f$ and $g$ are composable morphisms and two of $f$, $g$, and $g \circ f$ lie in $\mathrm{W}$, then so does the third.
+
+    \item The pairs $(\mathrm{Cof}, \mathrm{Fib} \cap \mathrm{W})$ and $(\mathrm{Cof} \cap \mathrm{W}, \mathrm{Fib})$
+    are weak factorization systems.
+\end{enumerate}
+
+\end{definition}
+
+\begin{remark}
+    We use $\hookrightarrow$ to denote cofibrations, $\twoheadrightarrow$ for fibrantions,
+    and $\simeq$ for weak equivalences.
+
+    A map that is both a (co)fibration and a weak equivalence (i.e., maps in $\mathrm{(Co)F} \cap \mathrm{W}$)
+    is also called a trivial (co)fibration. 
+\end{remark}
+
+\begin{remark}\label{cofibrant-replacement}
+    Suppose $\calM$ is a model category. Let $0$ be its initial object.
+
+    An object $X \in \mathcal{C}$ is called \emph{cofibrant} if the canonical map 
+    $0 \longrightarrow X$ is a cofibration.
+
+    Applying the WFS $(\mathrm{Cof}, \mathrm{Fib} \cap \mathrm{W})$ to this map gives a factorization
+    \[
+    \begin{tikzcd}
+        0 \arrow[rr] \arrow[dr, hookrightarrow] & & X \\
+        & QX \arrow[ur, twoheadrightarrow, "\simeq"] &
+    \end{tikzcd}
+    \]
+    where $QX$ is fibrant and $QX \twoheadrightarrow X$ is a weak equivalence.
+
+    If the factorization system is further functorial, then the assignment $X \mapsto QX$ is also functorial.
+\end{remark}
+
+\begin{lemma}[Ken Brown's lemma, Lemma 11.3.14]\label{Ken-Brown}
+    Let $\mathcal{M}$ and $\mathcal{N}$ be model categories, and let 
+    $F : \mathcal{M} \longrightarrow \mathcal{N}$
+    be a functor. Suppose that $F$ sends trivial cofibrations between cofibrant objects in
+    $\mathcal{M}$ to weak equivalences in $\mathcal{N}$.  
+    Then $F$ is homotopical on the full subcategory of cofibrant objects of $\mathcal{M}$;
+    that is, it preserves weak equivalences between cofibrant objects.
+\end{lemma}
+
+\begin{remark}
+    In other words, to see whether a functor is homotopical on the subcategory of cofibrant objects,
+    it suffices to check those trivial cofibrations.
+\end{remark}
+
+\section{Deformation}
+\begin{definition}[Def 2.2.1]
+    A \emph{left deformation} on a homotopical category $\calM$
+    consists of an endofunctor $Q$ together with a natural weak equivalence
+    $q : Q \Rightarrow 1_{\calM}$. 
+\end{definition}
+
+\begin{remark}
+    \begin{enumerate}
+        \item $Q$ is necessarily homotopical, due to 2-of-3 and the following commutative diagram
+            \[
+            \begin{tikzcd}
+                Qx \arrow[r, "qx\text{, }\simeq"] \arrow[d] & x \arrow[d, "\simeq"] \\
+                Qy \arrow[r, "qy\text{, }\simeq"] & y
+            \end{tikzcd}
+            \]
+        \item Let $\calM_Q$ denote the full subcategory of $\calM$ containing the image of $Q$.
+            Let $i : \calM_Q \to \calM$ denote the inclusion functor.
+            Obviously $Qi = 1_{\calM_Q}$ and $iQ$ is weakly equivalent to $1_M$ via $q$.
+            Both $i$ and $Q$ are homotopical, hence they descend to homotopy categories,
+            and form an equivalence of category $\Ho\calM \simeq \Ho\calM_Q$.
+            \[
+            \begin{tikzcd}
+                \calM_Q \arrow[r, "i"] \arrow[d] & \calM \arrow[r, "Q"] \arrow[d] & \calM_Q \arrow[d] \\
+                \Ho\calM_Q \arrow[r, "i"] & \Ho\calM \arrow[r, "Q"] & \Ho\calM_Q
+            \end{tikzcd}
+            \]
+    \end{enumerate}
+\end{remark}
+
+\begin{remark}
+    If $\calM$ is a model category with functorial weak factorization systems,
+    then by Remark \ref{cofibrant-replacement}, we see that the cofibrant replacement
+    functor is a left deformation of $\calM$.
+
+    As a result, we also call the image of a left deformation $Q$ \emph{cofibrant objects}.
+\end{remark}
+
+\begin{definition}[Def 2.2.4]
+    A \emph{left deformation} for a functor $F : \calM \to \calN$ between homotopical
+    categories consists of a left deformation $Q$ for $M$ such that $F$ is homotopical on $\calM_Q$.
+    When $F$ admits a left deformation, we say that $F$ is \emph{left deformable}.
+\end{definition}
+
+\begin{remark}
+    A functor between two (functorial) model categories
+    is called \emph{left Quillen} if it preserves cofibrations, trivial cofibrations and colimit.
+    By lemma \ref{Ken-Brown}, every left Quillen functor has a left deformation---the cofibrant replacement functors.
+\end{remark}
+
+\section{Derived functors from deformations}
+
+\begin{theorem}[Th 2.2.8]\label{derived-functor-from-deformation}
+    If $F : \calM \to \calN$ has a left deformation $Q$ with $q : Q \stackrel{\simeq}{\Rightarrow} 1_{\calM}$.
+    Then $\mathbb L F := FQ$ with $Fq : FQ \Rightarrow F$ gives a left derived functor of $F$.
+\end{theorem}
+
+\begin{remark}
+    Left derived functors in model category is also computed in this way,
+    see \href{https://ncatlab.org/nlab/show/derived+functor#on_homotopy_categories}{here}.
+\end{remark}
+
+Let's see how do we use this to compute homotopy pushout.
+In the span category $\Top^{\bullet \leftarrow \bullet \rightarrow \bullet}$,
+the colimit functor has a left deformation given by
+\href{https://ncatlab.org/nlab/show/mapping+cylinder}{mapping cylinder} replacement.
+The diagram
+\[
+\begin{tikzcd}
+    * & S ^ 0 \arrow[l] \arrow[r] & *
+\end{tikzcd}
+\]
+is then replaced by
+\[
+\begin{tikzcd}
+    D^1 & S ^ 0 \arrow[l] \arrow[r] & D^1
+\end{tikzcd}
+\]
+whoses colimit is exactly $S^1$.
+
+\begin{remark}
+    So far, we have only discussed \emph{left} deformations.
+    But the dual notion of \emph{right} deformation is obvious.
+\end{remark}
+
+\begin{definition}
+    An adjuction $F \dashv G$ between homotopical categories is called \emph{deformable}
+    is $F$ is left deformable and $G$ is right deformable.
+\end{definition}
+
+\begin{theorem}[Th 2.2.11]
+    If $F \dashv G$ is a deformable adjuction, then to total derived functors form an adjuction on the homotopy categories:
+    $$\mathbf{L}F \dashv \mathbf{L}G.$$
+\end{theorem}
+
+\begin{remark}
+    It is interesting to note that the proof of the previous theorem essentially makes use of the particular construction of
+    derived functors. Proving it using only the universal property of derived functor (as Kan extensions) seems to unsuccessful.
+    Actually, it turns out derived functors from deformation satisfy a stronger property, which is enough to prove the result above. 
+\end{remark}
+
+\begin{definition}
+    A Kan extension is called \emph{absolute} is it is preserved by any functor.
+\end{definition}
+
+\begin{theorem}[Prop 2.2.13]
+    The total left derived functor of a left deformable functor, as constructed in Theorem \ref{derived-functor-from-deformation},
+    is an absolute Kan extension, and in particular pointwise. 
+\end{theorem}
+
+\section{Application to homological algebra}
+In this section, we explain how this construction of derived functors
+apply to homological algebra (Week II Section \ref{Homological-algebra}).
+
+Again, we focus on the chain complexes of abelian groups,
+but it's the same story for $R$-modules or even any abelian category with enough projectives.
+
+\begin{definition}
+    An abelian group $P$ is called \emph{projective} if any map out of $P$ lifts against any surjection:
+    \[
+        \begin{tikzcd}
+            & A \arrow[d, twoheadrightarrow] \\
+            P \arrow[r] \arrow[ur, dashed] & B
+        \end{tikzcd}
+    \]
+\end{definition}
+
+\begin{remark}
+    Free groups are projective, since we can lift along the images of generators.
+    Conversely, projective groups happen to be free groups, so projectivity is not very interesting in $\Ab$.
+    This phenomenon is not true for arbitrary rings. In fact, the 0-th $K$-theory of a ring measures
+    how far projective modules are from being free.
+\end{remark}
+
+\begin{definition}
+    A \emph{projective resolution} of $A$ is a long exact sequence
+    \[
+        \cdots \to P_1 \to P_0 \to A \to 0
+    \]
+    where each $P_i$ is projective.
+\end{definition}
+
+We can perform the construction inductively:
+\begin{enumerate}
+    \item Let $P_0 := \mathbb Z[A]$ the free abelian group on $A$,
+        and $d_0 : P_0 = \mathbb Z[A] \to A$ be the obvious evaluation morphism.
+    \item Let $P_1 := \mathbb Z[\ker d_0]$ and $d_1 : P_1 \to P_0$ the composition:
+        \[
+        \begin{tikzcd}[sep=small]
+            P_1 \arrow[rr, "d_1"] \arrow[dr, twoheadrightarrow] & &
+                P_0 \arrow[r, "d_0", twoheadrightarrow] & A \arrow[r] & 0\\
+             & \ker d_0 \arrow[ur, hookrightarrow] & & &
+        \end{tikzcd}
+        \]
+        Clearly $\im d_1 = \ker d_0$.
+    \item Continue step 2.
+\end{enumerate}
+
+\begin{remark}
+    The construction above surely works for modules over any ring.
+    But for $\mathbb Z$, we can stop at step 2 by taking $P_1 = \ker d_0$,
+    which, as a subgroup of a free abelian group, is free and hence projective.
+
+    This phenomenon is again special for $\mathbb Z$ (and PIDs).
+    Submodules of free modules over a ring are not neccessarily free or projective.
+\end{remark}
+
+Now let's bend down the arrow $P_0 \to A$ and obtain the following diagram
+
+\[
+\begin{tikzcd}[sep=small]
+    \cdots \arrow[r] \arrow[d] & P_1 \arrow[r]
+        \arrow[d] & P_0 \arrow[r] \arrow[d] & 0 \arrow[d] \\
+    \cdots \arrow[r] & 0 \arrow[r] & A \arrow[r] & 0
+\end{tikzcd}
+\]
+This is an quasi-isomorphism, since $H_0$ of the upper chain complex is $P_0/\im d_1 \cong P_0/\ker d_0 \cong A$.
+
+Note that the construction is functorial and hence defines a functor $\Ab \to \Ch(\Ab)$.
+It can be generalized to any chain complex
+(see \href{https://ncatlab.org/nlab/show/projective+resolution#ResolutionOfAChainComplex}{here}),
+yielding an left deformation $Q : \Ch(\Ab) \to \Ch(\Ab)$, where the weak equivalences are quasi-isomorphisms.
+
+Furthermore, quasi-isomorphisms between projective chain complexes are chain homotopy equivalences
+(sort of Whitehead theorem in the category of chain complexes).
+If we start with an \href{https://ncatlab.org/nlab/show/additive+functor}{additive functor}
+$F : \Ab \to \Ab$, then $F_\bullet : \Ch(\Ab) \to \Ch(\Ab)$
+preserves chain homotopy equivalences and hence quasi-isomorphisms between projective complexes.
+It follows that the projective resolution functor $Q$ is a left deformation of $F_\bullet$.
+Hence, the $F_\bullet Q$ is a left derived functor of $F_\bullet$.
+
+Classically, we define
+$$ L_n F := \Ab \stackrel{\text{deg}_0}{\to} \Ch(\Ab) \stackrel{\mathbb L F := F_\bullet Q}{\longrightarrow} \Ch(\Ab) \stackrel{H_0}{\to} \Ab$$
+as the left derived functors of $F$.
+
+For example, $\text{Tor}(A,B) := L_1(- \otimes A)(B)$ computes the $A$-torsion subgroup of $B$.
+In particular $\text{Tor}(\mathbb Z/p, B)$ computes the $p$-torsions of $B$.
 
 \end{document}
