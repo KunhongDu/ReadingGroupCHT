@@ -59,15 +59,22 @@
 \newcommand{\ChAb}{\mathbf{Ch}(\mathbf{Ab})}
 \newcommand{\bZ}{\mathbb Z}
 \newcommand{\calC}{\mathcal{C}}
+\newcommand{\ucalC}{\underline{\mathcal{C}}}
 \newcommand{\calD}{\mathcal{D}}
+\newcommand{\ucalD}{\underline{\mathcal{D}}}
 \newcommand{\calE}{\mathcal{E}}
 \newcommand{\calF}{\mathcal{F}}
 \newcommand{\calM}{\mathcal{M}}
+\newcommand{\ucalM}{\underline{\mathcal{M}}}
 \newcommand{\calN}{\mathcal{N}}
+\newcommand{\ucalN}{\underline{\mathcal{N}}}
+\newcommand{\calU}{\mathcal{U}}
 \newcommand{\calV}{\mathcal{V}}
+\newcommand{\ucalV}{\underline{\mathcal{V}}}
 \newcommand{\calW}{\mathcal{W}}
 \newcommand{\bfL}{\mathbf{L}}
 \newcommand{\bbL}{\mathbb{L}}
+\newcommand{\bbone}{\mathbb{1}}
 \newcommand{\bfset}{\mathbf{Set}}
 
 % ---------- Title ----------
@@ -826,5 +833,419 @@ as the left derived functors of $F$.
 
 For example, $\text{Tor}(A,B) := L_1(- \otimes A)(B)$ computes the $A$-torsion subgroup of $B$.
 In particular $\text{Tor}(\mathbb Z/p, B)$ computes the $p$-torsions of $B$.
+
+\part{Enriched category theory, Mar 24, led by Jonathan}
+\label{part-4}
+\setcounter{section}{0}
+
+\section{Enriched categories}
+
+\begin{definition}
+A \emph{monoidal category} is a tuple
+\[
+(\mathcal{C}, \otimes, \bbone)
+\]
+consisting of
+
+\begin{itemize}
+    \item a category $\mathcal{C}$,
+    \item a bifunctor $\otimes : \mathcal{C} \times \mathcal{C} \to \mathcal{C}$ (the tensor product),
+    \item an object in $\mathrm{Ob}(\mathcal{C})$ (the unit object),
+    \item natural isomorphisms
+    \[
+    \alpha_{A,B,C} : (A \otimes B) \otimes C \to A \otimes (B \otimes C),
+    \]
+    \item natural isomorphisms
+    \[
+    \lambda_A : \bbone \otimes A \to A
+    \quad \text{and} \quad
+    \rho_A : A \otimes \bbone \to A,
+    \]
+\end{itemize}
+
+such that pentagon identity and triangle identity (see \href{https://ncatlab.org/nlab/show/monoidal+category}{here} for details) hold.
+\end{definition}
+
+\begin{remark}
+    Analogous to that a monoid is a one-object category, a monoidal category is a one-object bicategory.
+
+    Moreover, each monoidal category is isomorphic to one such that all the isomorphisms in the definition are actually equalities.
+\end{remark}
+
+\begin{example}
+    \begin{enumerate}
+        \item Any category with biproducts and a terminal object is a monoidal category.
+        \item ($R$-$\Mod$, $\otimes_R$, R) for a commutative ring $R$.
+    \end{enumerate}
+\end{example}
+
+\begin{definition}
+Let $\calV$ be a monoidal category.  
+A \emph{$\mathcal{V}$-enriched category} $\underline{\calC}$ consists of:
+
+\begin{itemize}
+    \item a class of objects $\underline{\calC}$,
+    \item for every pair of objects $x,y \in \underline{\calC}$, an object $\underline{\calC}(x,y) \in \mathcal{V}$,
+    \item for every triple of objects $x,y,z$, a composition morphism in $\mathcal{V}$
+    \[
+    \circ : \underline{\calC}(y,z) \otimes \underline{\calC}(x,y)
+    \to
+    \underline{\calC}(x,z),
+    \]
+    \item for every object $x$, a unit morphism in $\mathcal{V}$
+    \[
+    \mathrm{id}_x : \bbone \to \underline{\calC}(x,x),
+    \]
+\end{itemize}
+
+such that the following axioms hold:
+
+\begin{enumerate}
+    \item (Associativity) For all objects $x,y,z,w$, the following diagram commutes:
+        \[
+        \begin{tikzcd}
+            \ucalC(z,w) \otimes \ucalC(y,z) \otimes \ucalC(x,y) \arrow[r, "1 \otimes \circ"]
+                \arrow[d, "\circ \otimes 1"] & \ucalC(z,w) \otimes \ucalC(x,z) \arrow[d, "\circ"] \\
+            \ucalC(y,w) \otimes \ucalC(x,y) \arrow [r, "\circ"] & \ucalC(x,w)
+        \end{tikzcd}
+        \]
+    \item (Unit) For all objects $A,B$, the following diagrams commute:
+        \[
+        \begin{tikzcd}
+            \ucalC(x,y) \otimes \bbone \arrow[r, "1 \otimes \mathrm{id}_x"] \arrow[dr, "\cong"']
+                & \ucalC(x,y) \otimes \ucalC(x,x) \arrow[d,"\circ"] \\
+            & \ucalC(x,y)
+        \end{tikzcd}
+        \]
+
+        \[
+        \begin{tikzcd}
+            \bbone \otimes \ucalC(x,y) \arrow[r, "\mathrm{id}_y \otimes 1"] \arrow[dr, "\cong"']
+                & \ucalC(y,y) \otimes \ucalC(x,y) \arrow[d,"\circ"] \\
+            & \ucalC(x,y)
+        \end{tikzcd}
+        \]
+\end{enumerate}
+\end{definition}
+
+\begin{remark}
+    Note that in the definition of the associativity diagram, we serectly use the associativity of $\otimes$.
+    The $\cong$ in the unit diagrams stand for the unit data from $\calV$.
+\end{remark}
+
+\begin{example}
+    \begin{enumerate}
+        \item Every category is a $\mathbf{Set}$-enriched category.
+        \item $\mathbf{Ab}$-enriched categories plus some limit/colimit axioms are abelian categories which we mentioned earlier.
+        \item $\mathbf{sSet}$ is enriched over itself.
+        \item $\mathbf{Cat}$-enriched categories are exactly 2-categories.
+    \end{enumerate}
+\end{example}
+
+Since enriched category theory generalizes category theory, it has analogues of all the basic categorical notions.
+
+\begin{definition}
+    A $\calV$-functor $F : \ucalC \to \ucalD$ between $\calV$-categories is given by
+    a function on objects $x \in \ucalC \mapsto F x \in \ucalD$ with morphisms
+    $$F_{x,y} : \ucalC(x,y) \to \ucalD(Fx, Fy)$$
+    preserving identities and composition (in terms of commutative diagrams in $\calV$).
+\end{definition}
+
+\begin{definition}
+    Let $f : 1 \to \ucalC(y,z)$, we can define the postcomposition morphism:
+    $$f_* : \ucalC(x,y) \cong 1 \otimes \ucalC(x,y) \stackrel{f\otimes 1}{\to}
+        \ucalC(y,z)\otimes \ucalC(x,y)\stackrel{\circ}{\to} \calC(x,z).$$
+    Similar for precomposition.
+\end{definition}
+
+\begin{definition}
+    Let $F, G : \ucalC \to \ucalD$ be two $\calV$-functors.
+    A $\calV$-natural transformation $\alpha : F \Rightarrow G$ consists of a morphism
+    $\alpha_x : \bbone \to \calD(Fx, Gx)$ for each $x \in \ucalC$ such that for any $x,y$ the diagram commutes
+    \[
+    \begin{tikzcd}
+        \ucalC(x,y) \arrow[r, "F_{x,y}"] \arrow[d, "G_{x,y}"] & \ucalD(Fx,Fy) \arrow[d, "\alpha_{y,*}"] \\
+        \ucalD(Gx,Gy) \arrow[r, "\alpha_{x}^*"] & \ucalD(Fx,Fy)
+    \end{tikzcd}
+    \] 
+
+    If each $\alpha_x$ is also an isomorphism (see Remark \ref{morphism-isomorphism-enriched}),
+    we say it's a $\calV$-natural isomorphism.
+\end{definition}
+
+\begin{remark}
+    $\calV$-functors and $\calV$-transformations define the 2-category of $\calV$-$\textbf{Cat}$.
+\end{remark}
+
+\begin{definition}
+    A $\calV$-adjuction consists of $\calV$-functors $F : \ucalC \to \ucalD$ and $G : \ucalD \to \ucalC$ with
+    \begin{itemize}
+        \item $\calV$-natural isomorphisms $\ucalD(Fc,d) \cong \ucalC(c,Gd)$
+    \end{itemize}
+    or equivalently
+    \begin{itemize}
+        \item $\calV$-natural transformation $\eta : 1 \Rightarrow GF$ and $\varepsilon FG \Rightarrow 1$ with
+            triangle equalities.
+    \end{itemize}
+\end{definition}
+
+\begin{definition}
+    A $\calV$-equivalence of categories is given by a $\calV$-functor $F : \ucalC \to \ucalD$ with
+    \begin{itemize}
+        \item $G : \ucalD \to \ucalC$ s.t., $FG \simeq 1$ and $GF \simeq 1$.
+    \end{itemize}
+    or equivalently having the properties
+    \begin{itemize}
+        \item essentially surjective
+        \item $\calV$-fully faithful
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    Take $\calV$ to be $\bfset$ and we recover the notions from the usual category theory.
+\end{remark}
+
+\section{Underlying categories of enriched categories}
+There's a myth of obtaining the underlying category of an enriched category.
+Let $G$ be a group and consider the category $\Top^G$ of $G$-spaces and $G$-equivariant maps.
+There are two enrichments of interests:
+\begin{enumerate}
+    \item The subspace topology gives a topological enrichment. We denote it by $\underline{\Top}^G$.
+    \item $\Top^G$ is also monoidal with the action of product given by the diagonal action.
+        For two $G$-spaces $X,Y$, the space $\underline{\Top}(X,Y) := Y^X$ of all continuous maps
+        has a canonical $G$-action given by conjugation. This gives a $\Top^G$ an enrichment over itself.
+        We denote this by $\underline{\Top}_G$.
+\end{enumerate}
+
+Morally, these two enrichments should have the same underlying categories, if this notion is defined well enough.
+So it's not simply forgetting the topological/$G$-action structure, as it would return larger hom-sets for $\underline{\Top}_G$.
+
+Since any category is $\bfset$-enriched, "underlying category" can also be viewed as changing the base of enrichment,
+for which we need the following important notion.
+
+\begin{definition}
+    A functor $F : \calU \to \calV$ between monoidal categories is lax monoidal if there exists associative and unital natural transformations
+    \[
+        \eta : \bbone_{\calV} \to F(\bbone_{\calU})
+    \]
+    \[
+        \mu_{x,y} : F x \otimes_{\calV} F y \to F(x \otimes_{\calU} y)
+    \]
+    If these are further isomorphisms, then it's called strong monoidal.
+\end{definition}
+
+\begin{example}
+    $\calV(\bbone,-) : \calV \to \bfset$ is lax monoidal,
+    where $\calV(\bbone,x) \times \calV(\bbone,y) \to \calV(\bbone,x \otimes y)$ is given by
+    $$f,g \mapsto \bbone \cong \bbone \otimes \bbone \stackrel{f\otimes g}{\to} x \otimes y.$$  
+\end{example}
+
+\begin{definition}[Change of base]
+    Given a lax monoidal functor $F : \calV \to \calU$, any $\calV$-category $\ucalC$ has an associated $\calU$-category structure:
+    $\ucalC_{\calU}(x,y) := F\ucalC(x,y)$ with unit and composition maps given by the lax monoidal structure of $F$.
+\end{definition}
+
+\begin{definition}
+    The underlying category $\calC$ of a $\calV$-category $\ucalC$ is the
+    ($\bfset$-enriched) category after changing of base via $\calV(\bbone, -)$.
+\end{definition}
+
+\begin{example}
+    With this definition, the underlying category of $\underline{\Top}^G$ and $\underline{\Top}_G$ are the same.
+    For the proof, see Example 3.4.7.
+\end{example}
+
+\begin{remark}
+    \label{morphism-isomorphism-enriched}
+    Let $\ucalC$ be a $\calV$-category. We may sometimes implicity refer to its underlying category structure,
+    such as, a morphism $f : x \to y$ or an isomorphism $f : x \cong y$.
+\end{remark}
+
+\begin{remark}
+    Any lax monoidal functor $F : \calU \to \calV$ defines a 2-functor $\calU$-$\textbf{Cat}$ to $\calV$-$\textbf{Cat}$.
+    In particular, the ``underlying category'' defines a 2-functor from $\calV$-$\textbf{Cat}$ to $\textbf{Cat}$.
+\end{remark}
+
+\section{Closed (symmetric) monoidal structures}
+
+To further study the structure of enrichment, we require additional structure on the base monoidal category.
+
+\begin{definition}
+    A braided monoidal category is a monoidal category equipped with natrual isomorphisms
+    $$\sigma_{x,y} : x \otimes y \to y \otimes x,$$
+    called braiding, with some coherence diagrams
+    (see \href{https://ncatlab.org/nlab/show/braided+monoidal+category}{here} for details).
+
+    Symmetric monoidal categories are braided monoidal categories such that for all $x,y$
+    $$\sigma_{y,x} \circ \sigma_{x,y} = \id_{x,x}.$$
+
+\end{definition}
+
+\begin{remark}
+    Recall, monoidal categories are 1-object bicategories.
+    This further generalizes to that, as least morally, braided monoidal category are 1-object tricategories,
+    and symmetric monoidal categories are 1-object tetracategory.
+\end{remark}
+
+\begin{example}
+    Let $G$ be a set. The category of $G$-graded $\mathbb k$-vector spaces $\mathbf{Vect}^G_{\mathbb k}$ has no a priori interesting structures.
+    But if $G$ is a monoid, $\mathbf{Vect}^G_{\mathbb k}$ is monoidal with
+    $$(V \otimes W)_g := \bigoplus_{hk=g} V_h \otimes W_k,$$
+    and unit given by $V_e := \mathbb k$ and $V_g := 1$ for all $g \ne e$.
+    If $G$ is commutative, then we have a symmetric braiding structure
+    $$x \otimes y \mapsto (-1)^{|x||y|}(y\otimes x).$$
+    The sign is called Koszul sign, which is useful when doing homological algebra.
+\end{example}
+
+\begin{definition}
+    A monoidal category is left closed if $-\otimes v : \calV \to \calV$ has a right adjoint,
+    denoted by $\ucalV(v,-)$, for all $v$.
+
+    Right closedness is analogous for $v \otimes -$.
+
+    If $\calV$ is symmetric, then $\ucalV(v,-)$ is also a right adjoint to $v\otimes -$.
+    In this case, we say $\calV$ is \emph{closed}.
+\end{definition}
+
+\begin{remark}
+    If $\otimes = \times$, we say it's cartesian closed, a notion type theorists are familiar with. 
+\end{remark}
+
+Given a closed (symmetric) monoidal category $\calV$, the right adjoints $\ucalV(v,-)$ assemble
+in a unique way into a bifunctor
+$$\ucalV(-,-) : \calV^{op} \times \calV \to \calV,$$
+such that
+\[\calV(u\otimes v, w) \cong \calV(u,\ucalV(v,w)) \tag{1} \label{adj-1}\]
+natural in $u,v,w$.
+
+Furthermore, $\calV$ is enriched over itself via $\ucalV(-,-)$, where the composition
+$$\ucalV(v,w) \otimes \ucalV(u,v) \to \ucalV(u,w)$$
+is given by the adjuction of
+$$\ucalV(v,w) \otimes \ucalV(u,v) \otimes u \stackrel{\id\otimes \varepsilon}{\longrightarrow}
+    \ucalV(v,w) \otimes v \stackrel{\varepsilon}{\to} w,$$
+and the identity $\bbone \to \ucalV(u,u)$
+if given by the adjuction of
+$$\bbone \otimes u \cong u \stackrel{\id}{\to} u.$$
+
+\begin{lemma}[Lemma 3.4.9]
+    For a closed monoidal categories $\calV$, the underlying category of $\ucalV$ is $\calV$.
+\end{lemma}
+
+Now suppose $\calV$ is closed and cocomplete. We can construct an associated free $\calV$-category
+for all (unenriched) category $\calC$. Its objects are those of $\calC$,
+while the hom-object $\ucalC(x,y)$ is given by $\coprod_{{\calC}(x,y)}\bbone$.
+The identity is given by the identity arrow.
+Since monoidal product is a left adjoint by closedness, it preserves coproducts, and hence we have
+$$(\coprod_{\calC(y,z)} \bbone) \otimes (\coprod_{\calC(x,y)} \bbone) \cong
+    \coprod_{\calC(y,z) \times \calC(x,y)} \bbone \to \coprod_{\calC(x,z)} \bbone.$$
+
+\begin{remark}
+    This construction gives a classical free-forgetful 2-adjuction : $\mathbf{Cat} \leftrightarrows \calV\mbox{-}\mathbf{Cat}$.
+\end{remark}
+
+\begin{example}
+    $\mathbb{k}\mbox{-}\mathbf{Vect}$-free category has hom-objects as the free $\mathbb{k}$-linear spaces over the original hom-sets. 
+\end{example}
+
+\begin{lemma}
+    The adjuction (\ref{adj-1}) can be upgraded to a $\calV$-adjuction:
+    \[
+        \ucalV(u\otimes v, w) \cong \ucalV(u,\ucalV(v,w)).
+    \]
+\end{lemma}
+
+\begin{proof}
+    We proceed by Yoneda lemma. Let $x$ be an object in $\calV$. We have
+    \[
+        \calV(x, \ucalV(u\otimes v, w)) \cong \calV(x \otimes u \otimes v, w)
+            \cong \calV(x\otimes u, \ucalV(v,w)) \cong \calV(x, \ucalV(u, \ucalV(v,w))).
+    \]
+\end{proof}
+
+\section{Tensors and cotensors}
+We assume $\calV$ is a closed monoidal category throughout this section.  
+
+\begin{definition}
+    A $\calV$-category $\ucalM$ is tensored if there is a bifunctor
+    $$-\otimes - : \calV \times \calM \to \calM$$ together with natural isomorphisms
+    $$\ucalM(v\otimes m, n) \cong \ucalV(v, \calM(m,n)).$$
+\end{definition}
+
+\begin{remark}
+    If we start with a function assigning $v,m \mapsto v \otimes m$ with natural isomorphisms,
+    there is a unique way to extend it into a bifunctor.
+\end{remark}
+
+\begin{definition}
+    A $\calV$-category $\ucalM$ is cotensored if there is a bifunctor
+    $$[-,-] : \calV^{op} \times \calM \to \calM$$ together with natural isomorphisms
+    $$\ucalM(m, [v,n]) \cong \ucalV(v, \calM(m,n)).$$
+\end{definition}
+
+\begin{remark}
+    If $\ucalM$ is tensored over $\calV$, then there is a $\calV$-adjuction:
+        $$ - \otimes m : \ucalV \leftrightarrows \ucalM : \ucalM(m,-).$$
+
+    If $\ucalM$ is cotensored over $\calV$, then there is a $\calV$-adjuction:
+        $$ \ucalM(-,n) : \ucalM^{op} \leftrightarrows \ucalV : [-,n]^{op}.$$
+\end{remark}
+
+\begin{example}
+    Any closed monoidal category is enriched, tensored and cotensored over itself.
+\end{example}
+
+\begin{lemma}
+    Let $\ucalM$ be a tensored $\calV$-category. The tensor product is a unital and associative,
+    i.e., there exist natural isomorphisms
+    $$ \bbone \otimes m \cong m \quad\quad (v\otimes m) \otimes n \cong v \otimes (m \otimes n).$$
+\end{lemma}
+
+\begin{proof}
+    By Yoneda lemma.
+\end{proof}
+
+\begin{lemma}
+    Suppose $\ucalM$ and $\ucalN$ are tensored and cotensored $\ucalV$-categories and
+    $F : M \leftrightarrows N : G$ is an adjuction. Then any of the following determines the other
+    \begin{enumerate}
+        \item a $\calV$-adjuction : $\ucalN(Fm,n) \cong \ucalM(m,Gn)$
+        \item a $\ucalV$-functor $F$ that preserves tensors: $F(v\otimes m) \cong v \otimes F(m)$
+        \item a $\ucalV$-functor $G$ that preserves cotensors: $G([v,n])\cong [v,G(n)]$
+    \end{enumerate}
+\end{lemma}
+
+Enrichment, tensoring and cotensoring structures can be transported via strong monoidal adjuction:
+\begin{theorem}
+    Suppose $F : \calV \leftrightarrows \calU : G$ is an adjuction between closed monoidal structures
+    and $F$ is strong monoidal. Then any enriched $\calU$-category can be enriched, tensored and cotensored over $\calV$
+    in the following way.
+    
+    Let $\calM$ be a tensored an cotensored $\calU$-category.
+    Then
+    $$\ucalM_{\calV}(m,n) := G\ucalM_{\calU}(m,n)$$
+    $$v \otimes_{\calV} m := Fv \otimes_{\calU} m$$
+    $$[v,m]_{\calV} := [Fv, m]_{\calU}$$
+    define its enrichment, tensoring and cotensoring structures over $\calV$.
+\end{theorem}
+
+\begin{lemma}
+    In the setting of the previous theorem, $F\dashv G$ is a $\calV$-adjuction
+    with respect to the induced $\calV$-category structure on $\calU$.
+\end{lemma}
+
+\begin{example}
+    \begin{enumerate}
+        \item $(-)_+ : \textbf{sSet} \leftrightarrows : \textbf{sSet}_* : U$ shows that $\textbf{sSet}_*$
+            is enriched, tensored and cotensored over $\textbf{sSet}$. The same applies to $\Top$.
+        \item $|-| : \textbf{sSet} \leftrightarrows \Top : \text{Sing}$ is also an example, showing that
+            any $\Top$-enriched, tensored, cotensored category is also $\textbf{sSet}$-enriched tensored and cotensored.
+    \end{enumerate}
+\end{example}
+
+\begin{remark}
+    Strong monoidal right adjoint can transfer enrichment but not always tensors and cotensors.
+    So even though $\text{Sing}$ is also strong monoidal, simplicial enrichments are preferred
+    since they are more general.
+\end{remark}
 
 \end{document}
